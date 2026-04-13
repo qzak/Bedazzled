@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bo1cuscfwakf6"]
+
+[ext_resource type="PackedScene" uid="uid://dj763ygqaqjfw" path="res://Objects/gem.tscn" id="1_6wbla"]
+[ext_resource type="Texture2D" uid="uid://cp07howtcqjbb" path="res://Assets/sapphire.png" id="2_wftxc"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5p1ph"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_wftxc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="sapphire" unique_id=1438356024 instance=ExtResource("1_6wbla")]
+gemType = "sapphire"
+
+[node name="AnimatedSprite2D" parent="." index="0" unique_id=1989730450]
+sprite_frames = SubResource("SpriteFrames_5p1ph")

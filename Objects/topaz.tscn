@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://crsq6omco4vbt"]
+
+[ext_resource type="PackedScene" uid="uid://dj763ygqaqjfw" path="res://Objects/gem.tscn" id="1_1n4w1"]
+[ext_resource type="Texture2D" uid="uid://cahkr7i1pcrh6" path="res://Assets/topaz.png" id="2_lu5jh"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uiqa4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_lu5jh")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="topaz" unique_id=1438356024 instance=ExtResource("1_1n4w1")]
+gemType = "topaz"
+
+[node name="AnimatedSprite2D" parent="." index="0" unique_id=1989730450]
+sprite_frames = SubResource("SpriteFrames_uiqa4")

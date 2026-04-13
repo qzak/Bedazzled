@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://b5fo83l3cvryv"]
+
+[ext_resource type="PackedScene" uid="uid://dj763ygqaqjfw" path="res://Objects/gem.tscn" id="1_efdtx"]
+[ext_resource type="Texture2D" uid="uid://dcjris45xym5x" path="res://Assets/aquamarine.png" id="2_88ffk"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_efdtx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_88ffk")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="aquamarine" unique_id=1438356024 instance=ExtResource("1_efdtx")]
+gemType = "aquamarine"
+
+[node name="AnimatedSprite2D" parent="." index="0" unique_id=1989730450]
+sprite_frames = SubResource("SpriteFrames_efdtx")

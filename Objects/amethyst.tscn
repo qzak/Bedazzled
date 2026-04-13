@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bdisdbbw378os"]
+
+[ext_resource type="PackedScene" uid="uid://dj763ygqaqjfw" path="res://Objects/gem.tscn" id="1_58kkb"]
+[ext_resource type="Texture2D" uid="uid://5artrlbmsnfv" path="res://Assets/amethyst.png" id="2_snmgl"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_c8dlk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_snmgl")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="amethyst" unique_id=1438356024 instance=ExtResource("1_58kkb")]
+gemType = "amethyst"
+
+[node name="AnimatedSprite2D" parent="." index="0" unique_id=1989730450]
+sprite_frames = SubResource("SpriteFrames_c8dlk")

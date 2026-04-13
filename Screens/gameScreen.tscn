@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cv7q30vuc5dh7"]
+
+[ext_resource type="Script" uid="uid://bv4hgfecaxfv5" path="res://Screens/grid.gd" id="1_ae8uw"]
+
+[node name="gameScreen" type="Node2D" unique_id=1584342859]
+
+[node name="grid" type="Node2D" parent="." unique_id=1637153113]
+script = ExtResource("1_ae8uw")
+
+[node name="playArea" type="ColorRect" parent="grid" unique_id=1300977168]
+offset_left = 700.0
+offset_top = 20.0
+offset_right = 1745.0
+offset_bottom = 1065.0
+color = Color(0.21205786, 0.3516093, 0.46308267, 1)

@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cjyq3yx1aouy2"]
+
+[ext_resource type="PackedScene" uid="uid://dj763ygqaqjfw" path="res://Objects/gem.tscn" id="1_12gn2"]
+[ext_resource type="Texture2D" uid="uid://dtd2bhih0uqau" path="res://Assets/ruby.png" id="2_jaw44"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5dck2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_jaw44")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="ruby" unique_id=1438356024 instance=ExtResource("1_12gn2")]
+gemType = "ruby"
+
+[node name="AnimatedSprite2D" parent="." index="0" unique_id=1989730450]
+sprite_frames = SubResource("SpriteFrames_5dck2")

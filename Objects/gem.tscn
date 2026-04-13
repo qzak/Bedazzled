@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://dj763ygqaqjfw"]
+
+[ext_resource type="Script" uid="uid://bjau15kxar4ro" path="res://Objects/gem.gd" id="1_vbll1"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_o0id3"]
+
+[node name="gem" type="Node2D" unique_id=1438356024]
+script = ExtResource("1_vbll1")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1989730450]
+scale = Vector2(0.2, 0.2)
+sprite_frames = SubResource("SpriteFrames_o0id3")
