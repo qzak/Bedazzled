@@ -4,9 +4,21 @@
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_o0id3"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vbll1"]
+size = Vector2(100, 100)
+
 [node name="gem" type="Node2D" unique_id=1438356024]
 script = ExtResource("1_vbll1")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1989730450]
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_o0id3")
+
+[node name="Area2D" type="Area2D" parent="AnimatedSprite2D" unique_id=1901171727]
+scale = Vector2(4.9999986, 4.9999986)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatedSprite2D/Area2D" unique_id=477085084]
+shape = SubResource("RectangleShape2D_vbll1")
+
+[connection signal="mouse_entered" from="AnimatedSprite2D/Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="AnimatedSprite2D/Area2D" to="." method="_on_area_2d_mouse_exited"]
