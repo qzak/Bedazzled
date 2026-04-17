@@ -2,8 +2,7 @@ extends Node2D
 
 var gridWidth = 10
 var gridHeight = 10
-var x_start = 760
-var y_start = 1000
+var start = Vector2(760,1000)
 var offset = 100
 
 var gem_list = [
@@ -27,8 +26,8 @@ func _ready():
 			spawn_gem(i, j)
 	
 func grid_to_pixel(column, row):
-	var new_x = x_start + offset * column
-	var new_y = y_start + -offset * row
+	var new_x = start.x + offset * column
+	var new_y = start.y + -offset * row
 	return Vector2(new_x, new_y)
 
 func make_grid_array():
