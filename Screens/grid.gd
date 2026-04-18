@@ -1,10 +1,12 @@
 extends Node2D
 
+#Grid vars
 var gridWidth = 10
 var gridHeight = 10
 var start = Vector2(760,1000)
 var offset = 100
 
+#Gem vars
 var gem_list = [
 	preload("res://Objects/emerald.tscn"),
 	preload("res://Objects/ruby.tscn"),
@@ -13,8 +15,12 @@ var gem_list = [
 	preload("res://Objects/amethyst.tscn"),
 	preload("res://Objects/aquamarine.tscn")
 ]
-
 var gem_array = []
+
+#Action vars
+var action_start = Vector2()
+var action_end = Vector2()
+var action_active = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -30,6 +36,11 @@ func grid_to_pixel(column, row):
 	var new_x = start.x + offset * column
 	var new_y = start.y + -offset * row
 	return Vector2(new_x, new_y)
+
+func pixel_to_grid(position):
+	var column = int((position.x - start.x + offset / 2) / offset)
+	var row = int((start.y - position.y + offset / 2) / offset)
+	return Vector2(column, row)
 
 func make_grid_array():
 	var array = []
@@ -73,7 +84,35 @@ func check_match(column, row, gemType):
 				return true
 	return false
 
+func is_in_grid(column, row):
+	if column < 0 or column >= gridWidth or row < 0 or row >= gridHeight:
+		return false
+	return true
 
+func _input(event):
+	if Input.is_action_just_pressed("mouse_click"):
+		action_start = get_global_mouse_position()
+		print("Action start: " + str(action_start))
+		var grid_pos = pixel_to_grid(action_start)
+		if is_in_grid(grid_pos.x, grid_pos.y):
+			action_active = true
+	if Input.is_action_just_released("mouse_click"):
+		action_end = get_global_mouse_position()
+		print("Action end: " + str(action_end))
+		var grid_pos = pixel_to_grid(action_end)
+		if is_in_grid(grid_pos.x, grid_pos.y) && action_active:
+			if action_start.distance_to(action_end) > 50:
+				swap_gems(pixel_to_grid(action_start).x, pixel_to_grid(action_start).y, pixel_to_grid(action_end).x, pixel_to_grid(action_end).y)
+			print("Action from " + str(pixel_to_grid(action_start)) + " to " + str(pixel_to_grid(action_end)))
+
+func swap_gems(column1, row1, column2, row2):
+	var first_gem = gem_array[column1][row1]
+	var second_gem = gem_array[column2][row2]
+	var temp = gem_array[column1][row1]
+	gem_array[column1][row1] = gem_array[column2][row2]
+	gem_array[column2][row2] = temp
+	first_gem.position = grid_to_pixel(column2, row2)
+	second_gem.position = grid_to_pixel(column1, row1)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
