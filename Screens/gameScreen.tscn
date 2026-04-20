@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cv7q30vuc5dh7"]
 
-[ext_resource type="Script" uid="uid://bv4hgfecaxfv5" path="res://Screens/grid.gd" id="1_ae8uw"]
+[ext_resource type="Script" uid="uid://dydscjs8d30o6" path="res://Screens/gameScreen.gd" id="1_ae8uw"]
+[ext_resource type="FontFile" uid="uid://qc2tl5rfdjwg" path="res://Assets/agencyfb_bold.ttf" id="2_ilovs"]
 
 [node name="gameScreen" type="Node2D" unique_id=1584342859]
 
@@ -13,5 +14,31 @@ offset_bottom = 1065.0
 mouse_filter = 1
 color = Color(0.21205786, 0.3516093, 0.46308267, 1)
 
-[node name="grid" type="Node2D" parent="." unique_id=1637153113]
+[node name="gameScreen" type="Node2D" parent="." unique_id=1637153113]
 script = ExtResource("1_ae8uw")
+
+[node name="ScoreValue" type="Label" parent="gameScreen" unique_id=1714983299]
+offset_left = 378.0
+offset_top = 38.0
+offset_right = 683.0
+offset_bottom = 219.0
+theme_override_fonts/font = ExtResource("2_ilovs")
+theme_override_font_sizes/font_size = 150
+text = "0"
+
+[node name="Score" type="Label" parent="." unique_id=303282375]
+offset_left = 33.0
+offset_top = 38.0
+offset_right = 366.0
+offset_bottom = 219.0
+theme_override_fonts/font = ExtResource("2_ilovs")
+theme_override_font_sizes/font_size = 150
+text = "Score:"
+
+[node name="Debug" type="Label" parent="." unique_id=86561462]
+offset_left = 82.0
+offset_top = 463.0
+offset_right = 662.0
+offset_bottom = 969.0
+theme_override_fonts/font = ExtResource("2_ilovs")
+theme_override_font_sizes/font_size = 150

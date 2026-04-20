@@ -6,6 +6,17 @@ var gridHeight = 10
 var grid_start = Vector2(760,1000)
 var offset = 100
 var swap_in_progress = false
+var combo = 1
+
+@export var score = 0
+@export var total_gems_matched = {
+	"emerald": 0,
+	"ruby": 0,
+	"topaz": 0,
+	"sapphire": 0,
+	"amethyst": 0,
+	"aquamarine": 0
+}
 
 #Gem vars
 var gem_list = [
@@ -16,6 +27,7 @@ var gem_list = [
 	preload("res://Objects/amethyst.tscn"),
 	preload("res://Objects/aquamarine.tscn")
 ]
+
 var gem_array = []
 
 #Action vars
@@ -42,8 +54,8 @@ func grid_to_pixel(column, row):
 	return Vector2(new_x, new_y)
 
 func pixel_to_grid(pos):
-	var column = int((pos.x - grid_start.x + offset / 2) / offset)
-	var row = int((grid_start.y - pos.y + offset / 2) / offset)
+	var column = round((pos.x - grid_start.x) / offset)
+	var row = round((grid_start.y - pos.y) / offset)
 	return Vector2(column, row)
 
 func make_grid_array():
@@ -54,7 +66,7 @@ func make_grid_array():
 			array[i].append("temp")
 	return array
 
-func spawn_gem(column, row):
+func spawn_gem(column, row, animate = true):
 	var random_gem = randi() % gem_list.size()
 	var gem_instance = gem_list[random_gem].instantiate()
 	var random_gem_type = gem_instance.gemType
@@ -73,7 +85,12 @@ func spawn_gem(column, row):
 			gem_instance = gem_list[random_gem].instantiate()
 			random_gem_type = gem_instance.gemType
 	add_child(gem_instance)
-	gem_instance.position = grid_to_pixel(column, row)
+	if animate:
+		gem_instance.position = grid_to_pixel(column, row + gridHeight)
+		var tween = get_tree().create_tween()
+		tween.tween_property(gem_instance, "position", grid_to_pixel(column, row), 0.5)
+	else:
+		gem_instance.position = grid_to_pixel(column, row)
 	print ("Spawned gem at column: " + str(column) + " row: " + str(row) + " of type: " + str(random_gem))
 	gem_array[column][row] = gem_instance
 
@@ -147,12 +164,14 @@ func swap_gems(column1, row1, swap_direction):
 	first_gem_tween.tween_property(first_gem, "position", grid_to_pixel(column1 + swap_direction.x, row1 + swap_direction.y), 0.5)
 	var second_gem_tween = get_tree().create_tween()
 	second_gem_tween.tween_property(second_gem, "position", grid_to_pixel(column1, row1), 0.5)
+	await first_gem_tween.finished
+	await second_gem_tween.finished
 	print("Gem animations triggered")
 	if check_matches():
 		print("Match found, keeping swap")
-		await first_gem_tween.finished
-		#score_matches()
-		#temporary resolution
+		score_matches()
+		drop_gems()
+		spawn_new_gems()
 		swap_in_progress = false
 	else:
 		print("No match found, swapping back")
@@ -164,9 +183,26 @@ func swap_gems(column1, row1, swap_direction):
 		await first_gem_tween.finished
 		swap_in_progress = false
 
+func drop_gems():
+	for column in gridWidth:
+		var empty_spots = 0
+		for row in gridHeight:
+			if gem_array[column][row] == null:
+				empty_spots += 1
+			elif empty_spots > 0:
+				gem_array[column][row - empty_spots] = gem_array[column][row]
+				gem_array[column][row] = null
+				var gem_tween = get_tree().create_tween()
+				gem_tween.tween_property(gem_array[column][row - empty_spots], "position", grid_to_pixel(column, row - empty_spots), 0.5)
+
+func spawn_new_gems():
+	for column in gridWidth:
+		for row in gridHeight:
+			if gem_array[column][row] == null:
+				spawn_gem(column, row, true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if swap_in_progress == false:
 		if Input.is_action_just_pressed("mouse_click"):
 			print("mouse clicked")
@@ -187,3 +223,13 @@ func _process(delta: float) -> void:
 					swap_gems(action_start_grid_pos.x, action_start_grid_pos.y, direction)
 					swap_in_progress = true
 			action_legal = false
+
+func score_matches():
+	for column in gridWidth:
+		for row in gridHeight:
+			if gem_array[column][row] != null and gem_array[column][row].matched:
+				print("Scoring match at column: " + str(column) + " row: " + str(row))
+				total_gems_matched[gem_array[column][row].score()] += 1
+				score += 10 * combo
+				$ScoreValue.text = str(score)
+				gem_array[column][row] = null
