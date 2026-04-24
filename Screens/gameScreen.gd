@@ -6,6 +6,7 @@ var gridHeight = 10
 var grid_start = Vector2(760,1000)
 var offset = 100
 var swap_in_progress = false
+var base_gem_score = 100
 var combo = 1
 
 @export var score = 0
@@ -171,13 +172,16 @@ func swap_gems(column1, row1, swap_direction):
 		print("Match found, keeping swap")
 		var continue_matching = true
 		while continue_matching:
-			score_matches()
+			await score_matches()
 			print("Scored matches, dropping gems")
+			#wait 100ms to allow for player to be satisfied with numbers
+			await get_tree().create_timer(0.3).timeout
 			drop_gems()
 			print("Dropped gems, spawning new gems")
 			spawn_new_gems()
 			await get_tree().create_timer(0.5).timeout
 			continue_matching = check_matches()
+		combo = 1
 	else:
 		print("No match found, swapping back")
 		var first_gem_tween_back = get_tree().create_tween()
@@ -226,7 +230,7 @@ func _process(_delta: float) -> void:
 			print("mouse released")
 			action_end = get_global_mouse_position()
 			action_end_grid_pos = pixel_to_grid(action_end)
-			if (action_start_grid_pos.x == 0 && action_end_grid_pos.x <= 0) or (action_start_grid_pos.x == gridWidth - 1 && action_end_grid_pos.x >= gridWidth - 1) or (action_start_grid_pos.y == 0 && action_end_grid_pos.y <= 0) or (action_start_grid_pos.y == gridHeight - 1 && action_end_grid_pos.y >= gridHeight - 1) or action_start_grid_pos == action_end_grid_pos:
+			if (action_start_grid_pos.x == 0 && action_end_grid_pos.x < 0) or (action_start_grid_pos.x == gridWidth - 1 && action_end_grid_pos.x > gridWidth - 1) or (action_start_grid_pos.y == 0 && action_end_grid_pos.y < 0) or (action_start_grid_pos.y == gridHeight - 1 && action_end_grid_pos.y > gridHeight - 1) or action_start_grid_pos == action_end_grid_pos:
 				action_legal = false
 				print("Action end in same grid position as action start, not legal")
 				swap_in_progress = false
@@ -242,12 +246,15 @@ func _process(_delta: float) -> void:
 			action_legal = false
 
 func score_matches():
+	var gem_value = 0
 	for column in gridWidth:
 		for row in gridHeight:
 			if gem_array[column][row] != null and gem_array[column][row].matched:
 				print("Scoring match at column: " + str(column) + " row: " + str(row))
-				total_gems_matched[gem_array[column][row].score()] += 1
-				score += 10 * combo
+				gem_value = base_gem_score * combo
+				score += gem_value
+				var gem_type = gem_array[column][row].score(gem_value)
+				total_gems_matched[gem_type] += 1
 				$ScoreValue.text = str(score)
 				gem_array[column][row] = null
-				combo += 1
+	combo += 1

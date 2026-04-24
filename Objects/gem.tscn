@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dj763ygqaqjfw"]
 
 [ext_resource type="Script" uid="uid://bjau15kxar4ro" path="res://Objects/gem.gd" id="1_vbll1"]
+[ext_resource type="FontFile" uid="uid://qc2tl5rfdjwg" path="res://Assets/agencyfb_bold.ttf" id="2_tf6dy"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_o0id3"]
 
@@ -19,6 +20,24 @@ scale = Vector2(4.9999986, 4.9999986)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatedSprite2D/Area2D" unique_id=477085084]
 shape = SubResource("RectangleShape2D_vbll1")
+
+[node name="ScoreLabel" type="Label" parent="." unique_id=875701489]
+z_index = 10
+z_as_relative = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -41.5
+offset_top = -36.5
+offset_right = 41.5
+offset_bottom = 36.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_tf6dy")
+theme_override_font_sizes/font_size = 60
+horizontal_alignment = 1
 
 [connection signal="mouse_entered" from="AnimatedSprite2D/Area2D" to="." method="_on_area_2d_mouse_entered"]
 [connection signal="mouse_exited" from="AnimatedSprite2D/Area2D" to="." method="_on_area_2d_mouse_exited"]

@@ -34,7 +34,11 @@ func match():
 	animation.tween_property($AnimatedSprite2D, "scale", Vector2.ZERO, 0.5).set_trans(Tween.TRANS_SINE)
 	await animation.finished
 
-func score():
+func score(gem_score):
 	# return gemType and de-instantiate the gem instance
-	queue_free()
+	$ScoreLabel.text = str(gem_score)
+	var score_animation = get_tree().create_tween()
+	score_animation.set_parallel(true)
+	score_animation.tween_property($ScoreLabel, "position:y", $ScoreLabel.position.y - 50, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	score_animation.tween_property($ScoreLabel, "modulate:a", 0.0, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	return gemType
