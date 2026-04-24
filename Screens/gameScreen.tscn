@@ -26,6 +26,15 @@ theme_override_fonts/font = ExtResource("2_ilovs")
 theme_override_font_sizes/font_size = 150
 text = "0"
 
+[node name="Debug" type="Label" parent="gameScreen" unique_id=86561462]
+offset_left = 82.0
+offset_top = 463.0
+offset_right = 662.0
+offset_bottom = 969.0
+theme_override_fonts/font = ExtResource("2_ilovs")
+theme_override_font_sizes/font_size = 50
+text = "0"
+
 [node name="Score" type="Label" parent="." unique_id=303282375]
 offset_left = 33.0
 offset_top = 38.0
@@ -34,11 +43,3 @@ offset_bottom = 219.0
 theme_override_fonts/font = ExtResource("2_ilovs")
 theme_override_font_sizes/font_size = 150
 text = "Score:"
-
-[node name="Debug" type="Label" parent="." unique_id=86561462]
-offset_left = 82.0
-offset_top = 463.0
-offset_right = 662.0
-offset_bottom = 969.0
-theme_override_fonts/font = ExtResource("2_ilovs")
-theme_override_font_sizes/font_size = 150

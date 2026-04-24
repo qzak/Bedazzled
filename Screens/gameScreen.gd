@@ -169,19 +169,26 @@ func swap_gems(column1, row1, swap_direction):
 	print("Gem animations triggered")
 	if check_matches():
 		print("Match found, keeping swap")
-		score_matches()
-		drop_gems()
-		spawn_new_gems()
-		swap_in_progress = false
+		var continue_matching = true
+		while continue_matching:
+			score_matches()
+			print("Scored matches, dropping gems")
+			drop_gems()
+			print("Dropped gems, spawning new gems")
+			spawn_new_gems()
+			await get_tree().create_timer(0.5).timeout
+			continue_matching = check_matches()
 	else:
 		print("No match found, swapping back")
-		first_gem_tween.tween_property(first_gem, "position", grid_to_pixel(column1, row1), 0.5)
-		second_gem_tween.tween_property(second_gem, "position", grid_to_pixel(column1 + swap_direction.x, row1 + swap_direction.y), 0.5)
+		var first_gem_tween_back = get_tree().create_tween()
+		first_gem_tween_back.tween_property(first_gem, "position", grid_to_pixel(column1, row1), 0.5)
+		var second_gem_tween_back = get_tree().create_tween()
+		second_gem_tween_back.tween_property(second_gem, "position", grid_to_pixel(column1 + swap_direction.x, row1 + swap_direction.y), 0.5)
 		gem_array[column1][row1] = first_gem
 		gem_array[column1 + swap_direction.x][row1 + swap_direction.y] = second_gem
 		#wait until the tweens are done before allowing another swap
-		await first_gem_tween.finished
-		swap_in_progress = false
+		await first_gem_tween_back.finished
+	swap_in_progress = false
 
 func drop_gems():
 	for column in gridWidth:
@@ -194,15 +201,18 @@ func drop_gems():
 				gem_array[column][row] = null
 				var gem_tween = get_tree().create_tween()
 				gem_tween.tween_property(gem_array[column][row - empty_spots], "position", grid_to_pixel(column, row - empty_spots), 0.5)
+	await get_tree().create_timer(0.5).timeout
 
 func spawn_new_gems():
 	for column in gridWidth:
 		for row in gridHeight:
 			if gem_array[column][row] == null:
 				spawn_gem(column, row, true)
+	await get_tree().create_timer(0.5).timeout
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	$Debug.text = "Swap in progress: " + str(swap_in_progress) + "\nAction legal: " + str(action_legal) + "\nAction start: " + str(action_start) + "\nAction end: " + str(action_end) + "\nAction start grid pos: " + str(action_start_grid_pos) + "\nAction end grid pos: " + str(action_end_grid_pos) + "\nDirection: " + str(direction)
 	if swap_in_progress == false:
 		if Input.is_action_just_pressed("mouse_click"):
 			print("mouse clicked")
@@ -212,16 +222,23 @@ func _process(_delta: float) -> void:
 			if is_in_grid(action_start_grid_pos.x, action_start_grid_pos.y):
 				action_legal = true
 		if Input.is_action_just_released("mouse_click"):
+			swap_in_progress = true
 			print("mouse released")
 			action_end = get_global_mouse_position()
 			action_end_grid_pos = pixel_to_grid(action_end)
+			if (action_start_grid_pos.x == 0 && action_end_grid_pos.x <= 0) or (action_start_grid_pos.x == gridWidth - 1 && action_end_grid_pos.x >= gridWidth - 1) or (action_start_grid_pos.y == 0 && action_end_grid_pos.y <= 0) or (action_start_grid_pos.y == gridHeight - 1 && action_end_grid_pos.y >= gridHeight - 1) or action_start_grid_pos == action_end_grid_pos:
+				action_legal = false
+				print("Action end in same grid position as action start, not legal")
+				swap_in_progress = false
 			print("Action end: " + str(action_end) + " End grid pos: " + str(action_end_grid_pos))
 			if action_legal:
 				print ("Action start: " + str(action_start_grid_pos) + " Action end: " + str(action_end_grid_pos))
 				direction = movement_direction(action_start, action_end)
 				if !((direction.x + action_start_grid_pos.x) >= gridWidth or (direction.y + action_start_grid_pos.y) >= gridHeight or (direction.x + action_start_grid_pos.x) < 0 or (direction.y + action_start_grid_pos.y) < 0 or action_start == action_end):
 					swap_gems(action_start_grid_pos.x, action_start_grid_pos.y, direction)
-					swap_in_progress = true
+			else:
+				swap_in_progress = false
+				print("Action was not legal, not swapping")
 			action_legal = false
 
 func score_matches():
@@ -233,3 +250,4 @@ func score_matches():
 				score += 10 * combo
 				$ScoreValue.text = str(score)
 				gem_array[column][row] = null
+				combo += 1
