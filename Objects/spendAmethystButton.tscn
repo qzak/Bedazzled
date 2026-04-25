@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://c7f8ae3g7qxc7"]
 
 [ext_resource type="PackedScene" uid="uid://cv47uhrh2x84o" path="res://Objects/spendButton.tscn" id="1_mk0bn"]
-[ext_resource type="Script" uid="uid://dnj38iwg0h2kb" path="res://Objects/spendAmethystButton.gd" id="2_iefq0"]
 [ext_resource type="Texture2D" uid="uid://5artrlbmsnfv" path="res://Assets/amethyst.png" id="3_ttu5e"]
 
-[node name="Control" unique_id=472369013 instance=ExtResource("1_mk0bn")]
-script = ExtResource("2_iefq0")
+[node name="spendButton" unique_id=472369013 instance=ExtResource("1_mk0bn")]
+spend_gems_type = "amethyst"
 
-[node name="Sprite2D" parent="SpendButton" parent_id_path=PackedInt32Array(219314242) index="0" unique_id=900881577]
+[node name="Sprite2D" parent="Button" parent_id_path=PackedInt32Array(219314242) index="0" unique_id=900881577]
 texture = ExtResource("3_ttu5e")
+
+[connection signal="pressed" from="Button" to="." method="_on_spend_button_pressed"]

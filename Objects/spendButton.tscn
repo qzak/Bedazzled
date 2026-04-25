@@ -1,25 +1,27 @@
 [gd_scene format=3 uid="uid://cv47uhrh2x84o"]
 
+[ext_resource type="Script" uid="uid://bdhljuute4gwh" path="res://Objects/spendButton.gd" id="1_mpryi"]
 [ext_resource type="FontFile" uid="uid://qc2tl5rfdjwg" path="res://Assets/agencyfb_bold.ttf" id="2_ddtno"]
 
-[node name="Control" type="Control" unique_id=472369013]
+[node name="spendButton" type="Control" unique_id=472369013]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_mpryi")
 
-[node name="SpendButton" type="Button" parent="." unique_id=219314242]
+[node name="Button" type="Button" parent="." unique_id=219314242]
 layout_mode = 0
-offset_right = 251.0
+offset_right = 183.0
 offset_bottom = 90.0
 
-[node name="Sprite2D" type="Sprite2D" parent="SpendButton" unique_id=900881577]
-position = Vector2(201.99997, 42.999996)
+[node name="Sprite2D" type="Sprite2D" parent="Button" unique_id=900881577]
+position = Vector2(137, 42)
 scale = Vector2(0.09, 0.09)
 
-[node name="Label" type="Label" parent="SpendButton" unique_id=986352271]
+[node name="Label" type="Label" parent="Button" unique_id=986352271]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 11.0

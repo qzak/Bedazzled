@@ -38,6 +38,14 @@ func _ready():
 			print("Spawning gem at column: " + str(column) + " row: " + str(row))
 			print("gem array location: " + str(gem_array[column][row]))
 			spawn_gem(column, row)
+	
+	#spawn the spend gem buttons and connect their signals to the on_spend_button_pressed function
+
+	var spend_button = preload("res://Objects/spendAmethystButton.tscn").instantiate()
+	add_child(spend_button)
+	spend_button.position = Vector2(85, 250)  # Set your desired position
+	spend_button.spend_button_pressed.connect(on_spend_button_pressed)
+
 
 func grid_to_pixel(column, row):
 	var new_x = grid_start.x + offset * column
@@ -222,9 +230,7 @@ func _process(_delta: float) -> void:
 			action_end_grid_pos = pixel_to_grid(action_end)
 			if (action_start_grid_pos.x == 0 && action_end_grid_pos.x < 0) or (action_start_grid_pos.x == gridWidth - 1 && action_end_grid_pos.x > gridWidth - 1) or (action_start_grid_pos.y == 0 && action_end_grid_pos.y < 0) or (action_start_grid_pos.y == gridHeight - 1 && action_end_grid_pos.y > gridHeight - 1) or action_start_grid_pos == action_end_grid_pos:
 				action_legal = false
-				print("Action end in same grid position as action start, not legal")
 				Global.swap_in_progress = false
-			print("Action end: " + str(action_end) + " End grid pos: " + str(action_end_grid_pos))
 			if action_legal:
 				print ("Action start: " + str(action_start_grid_pos) + " Action end: " + str(action_end_grid_pos))
 				direction = movement_direction(action_start, action_end)
@@ -232,7 +238,6 @@ func _process(_delta: float) -> void:
 					swap_gems(action_start_grid_pos.x, action_start_grid_pos.y, direction)
 			else:
 				Global.swap_in_progress = false
-				print("Action was not legal, not swapping")
 			action_legal = false
 
 func score_matches():
@@ -240,7 +245,6 @@ func score_matches():
 	for column in gridWidth:
 		for row in gridHeight:
 			if gem_array[column][row] != null and gem_array[column][row].matched:
-				print("Scoring match at column: " + str(column) + " row: " + str(row))
 				gem_value = base_gem_score * combo
 				score += gem_value
 				var gem_type = gem_array[column][row].score(gem_value)
@@ -250,11 +254,8 @@ func score_matches():
 	combo += 1
 
 # Function called by spend_button and similar buttons
-func on_spend_button_pressed(gem_type: String = "amethyst"):
-	print("Spend " + gem_type + " button pressed in gameScreen")
-	# Add your spending logic here
-	# Example: spend_currency() or trigger_power_up()
-	# For amethyst, you can add specific logic like:
-	if gem_type == "amethyst":
-		print("Spending amethyst gem")
-		# Add amethyst-specific spending logic here
+func on_spend_button_pressed(spend_gem_type):
+	print("Spend button pressed for gem type: " + str(spend_gem_type))
+	match spend_gem_type == "amethyst":
+		
+		pass
