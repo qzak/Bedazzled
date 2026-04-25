@@ -5,19 +5,9 @@ var gridWidth = 10
 var gridHeight = 10
 var grid_start = Vector2(760,1000)
 var offset = 100
-var swap_in_progress = false
 var base_gem_score = 100
 var combo = 1
-
-@export var score = 0
-@export var total_gems_matched = {
-	"emerald": 0,
-	"ruby": 0,
-	"topaz": 0,
-	"sapphire": 0,
-	"amethyst": 0,
-	"aquamarine": 0
-}
+var score = 0
 
 #Gem vars
 var gem_list = [
@@ -192,7 +182,7 @@ func swap_gems(column1, row1, swap_direction):
 		gem_array[column1 + swap_direction.x][row1 + swap_direction.y] = second_gem
 		#wait until the tweens are done before allowing another swap
 		await first_gem_tween_back.finished
-	swap_in_progress = false
+	Global.swap_in_progress = false
 
 func drop_gems():
 	for column in gridWidth:
@@ -216,8 +206,8 @@ func spawn_new_gems():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	$Debug.text = "Swap in progress: " + str(swap_in_progress) + "\nAction legal: " + str(action_legal) + "\nAction start: " + str(action_start) + "\nAction end: " + str(action_end) + "\nAction start grid pos: " + str(action_start_grid_pos) + "\nAction end grid pos: " + str(action_end_grid_pos) + "\nDirection: " + str(direction)
-	if swap_in_progress == false:
+	$Debug.text = "Swap in progress: " + str(Global.swap_in_progress) + "\nAction legal: " + str(action_legal) + "\nAction start: " + str(action_start) + "\nAction end: " + str(action_end) + "\nAction start grid pos: " + str(action_start_grid_pos) + "\nAction end grid pos: " + str(action_end_grid_pos) + "\nDirection: " + str(direction)
+	if Global.swap_in_progress == false:
 		if Input.is_action_just_pressed("mouse_click"):
 			print("mouse clicked")
 			action_start = get_global_mouse_position()
@@ -226,14 +216,14 @@ func _process(_delta: float) -> void:
 			if is_in_grid(action_start_grid_pos.x, action_start_grid_pos.y):
 				action_legal = true
 		if Input.is_action_just_released("mouse_click"):
-			swap_in_progress = true
+			Global.swap_in_progress = true
 			print("mouse released")
 			action_end = get_global_mouse_position()
 			action_end_grid_pos = pixel_to_grid(action_end)
 			if (action_start_grid_pos.x == 0 && action_end_grid_pos.x < 0) or (action_start_grid_pos.x == gridWidth - 1 && action_end_grid_pos.x > gridWidth - 1) or (action_start_grid_pos.y == 0 && action_end_grid_pos.y < 0) or (action_start_grid_pos.y == gridHeight - 1 && action_end_grid_pos.y > gridHeight - 1) or action_start_grid_pos == action_end_grid_pos:
 				action_legal = false
 				print("Action end in same grid position as action start, not legal")
-				swap_in_progress = false
+				Global.swap_in_progress = false
 			print("Action end: " + str(action_end) + " End grid pos: " + str(action_end_grid_pos))
 			if action_legal:
 				print ("Action start: " + str(action_start_grid_pos) + " Action end: " + str(action_end_grid_pos))
@@ -241,7 +231,7 @@ func _process(_delta: float) -> void:
 				if !((direction.x + action_start_grid_pos.x) >= gridWidth or (direction.y + action_start_grid_pos.y) >= gridHeight or (direction.x + action_start_grid_pos.x) < 0 or (direction.y + action_start_grid_pos.y) < 0 or action_start == action_end):
 					swap_gems(action_start_grid_pos.x, action_start_grid_pos.y, direction)
 			else:
-				swap_in_progress = false
+				Global.swap_in_progress = false
 				print("Action was not legal, not swapping")
 			action_legal = false
 
@@ -254,7 +244,17 @@ func score_matches():
 				gem_value = base_gem_score * combo
 				score += gem_value
 				var gem_type = gem_array[column][row].score(gem_value)
-				total_gems_matched[gem_type] += 1
+				Global.total_gems_matched[gem_type] += 1
 				$ScoreValue.text = str(score)
 				gem_array[column][row] = null
 	combo += 1
+
+# Function called by spend_button and similar buttons
+func on_spend_button_pressed(gem_type: String = "amethyst"):
+	print("Spend " + gem_type + " button pressed in gameScreen")
+	# Add your spending logic here
+	# Example: spend_currency() or trigger_power_up()
+	# For amethyst, you can add specific logic like:
+	if gem_type == "amethyst":
+		print("Spending amethyst gem")
+		# Add amethyst-specific spending logic here

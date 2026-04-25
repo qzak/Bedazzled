@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://cv47uhrh2x84o"]
+
+[ext_resource type="FontFile" uid="uid://qc2tl5rfdjwg" path="res://Assets/agencyfb_bold.ttf" id="2_ddtno"]
+
+[node name="Control" type="Control" unique_id=472369013]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SpendButton" type="Button" parent="." unique_id=219314242]
+layout_mode = 0
+offset_right = 251.0
+offset_bottom = 90.0
+
+[node name="Sprite2D" type="Sprite2D" parent="SpendButton" unique_id=900881577]
+position = Vector2(201.99997, 42.999996)
+scale = Vector2(0.09, 0.09)
+
+[node name="Label" type="Label" parent="SpendButton" unique_id=986352271]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 11.0
+offset_right = 163.0
+offset_bottom = 74.0
+theme_override_fonts/font = ExtResource("2_ddtno")
+theme_override_font_sizes/font_size = 51

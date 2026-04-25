@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://b8b06f7ujo5ab"]
-
-[ext_resource type="Script" uid="uid://blh1a67db53gg" path="res://Logic/gameLogic.gd" id="1_lem8r"]
-
-[node name="gameLogic" type="Node" unique_id=1373125939]
-script = ExtResource("1_lem8r")
