@@ -6,12 +6,14 @@ var matched = false
 var is_hovered = false
 
 func _on_area_2d_mouse_entered():
-	if !matched && !Global.swap_in_progress:
+	if !matched && !Global.scoring_in_progress:
+		z_index = 100
 		var animation = get_tree().create_tween()
 		animation.tween_property($AnimatedSprite2D, "scale", Vector2(defaultScale * 1.2, defaultScale * 1.2), 0.1)
 
 func _on_area_2d_mouse_exited():
 	if !matched:
+		z_index = 0
 		var animation = get_tree().create_tween()
 		animation.tween_property($AnimatedSprite2D, "scale", Vector2(defaultScale, defaultScale), 0.1)
 

@@ -5,6 +5,7 @@
 
 [node name="spendButton" unique_id=472369013 instance=ExtResource("1_mk0bn")]
 spend_gems_type = "amethyst"
+gem_tooltip_text = "Destroy a single gem on the board."
 
 [node name="Sprite2D" parent="Button" parent_id_path=PackedInt32Array(219314242) index="0" unique_id=900881577]
 texture = ExtResource("3_ttu5e")

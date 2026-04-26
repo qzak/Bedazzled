@@ -168,18 +168,7 @@ func swap_gems(column1, row1, swap_direction):
 	print("Gem animations triggered")
 	if check_matches():
 		print("Match found, keeping swap")
-		var continue_matching = true
-		while continue_matching:
-			await score_matches()
-			print("Scored matches, dropping gems")
-			#wait 100ms to allow for player to be satisfied with numbers
-			await get_tree().create_timer(0.3).timeout
-			drop_gems()
-			print("Dropped gems, spawning new gems")
-			spawn_new_gems()
-			await get_tree().create_timer(0.5).timeout
-			continue_matching = check_matches()
-		combo = 1
+		await score_matches_loop()
 	else:
 		print("No match found, swapping back")
 		var first_gem_tween_back = get_tree().create_tween()
@@ -190,7 +179,22 @@ func swap_gems(column1, row1, swap_direction):
 		gem_array[column1 + swap_direction.x][row1 + swap_direction.y] = second_gem
 		#wait until the tweens are done before allowing another swap
 		await first_gem_tween_back.finished
-	Global.swap_in_progress = false
+	Global.scoring_in_progress = false
+
+func score_matches_loop():
+	combo = 1
+	var continue_matching = true
+	while continue_matching:
+		await score_matches()
+		print("Scored matches, dropping gems")
+		#wait 100ms to allow for player to be satisfied with numbers
+		await get_tree().create_timer(0.3).timeout
+		drop_gems()
+		print("Dropped gems, spawning new gems")
+		spawn_new_gems()
+		await get_tree().create_timer(0.5).timeout
+		continue_matching = check_matches()
+
 
 func drop_gems():
 	for column in gridWidth:
@@ -214,8 +218,9 @@ func spawn_new_gems():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	$Debug.text = "Swap in progress: " + str(Global.swap_in_progress) + "\nAction legal: " + str(action_legal) + "\nAction start: " + str(action_start) + "\nAction end: " + str(action_end) + "\nAction start grid pos: " + str(action_start_grid_pos) + "\nAction end grid pos: " + str(action_end_grid_pos) + "\nDirection: " + str(direction)
-	if Global.swap_in_progress == false:
+	$ScoreValue.text = str(score)
+	$Debug.text = "Scoring in progress: " + str(Global.scoring_in_progress) + "\nAbility in progress: " + str(Global.ability_in_progress) + "\nAction legal: " + str(action_legal) + "\nAction start: " + str(action_start) + "\nAction end: " + str(action_end) + "\nAction start grid pos: " + str(action_start_grid_pos) + "\nAction end grid pos: " + str(action_end_grid_pos) + "\nDirection: " + str(direction)
+	if !Global.scoring_in_progress and !Global.ability_in_progress:
 		if Input.is_action_just_pressed("mouse_click"):
 			print("mouse clicked")
 			action_start = get_global_mouse_position()
@@ -224,20 +229,20 @@ func _process(_delta: float) -> void:
 			if is_in_grid(action_start_grid_pos.x, action_start_grid_pos.y):
 				action_legal = true
 		if Input.is_action_just_released("mouse_click"):
-			Global.swap_in_progress = true
+			Global.scoring_in_progress = true
 			print("mouse released")
 			action_end = get_global_mouse_position()
 			action_end_grid_pos = pixel_to_grid(action_end)
 			if (action_start_grid_pos.x == 0 && action_end_grid_pos.x < 0) or (action_start_grid_pos.x == gridWidth - 1 && action_end_grid_pos.x > gridWidth - 1) or (action_start_grid_pos.y == 0 && action_end_grid_pos.y < 0) or (action_start_grid_pos.y == gridHeight - 1 && action_end_grid_pos.y > gridHeight - 1) or action_start_grid_pos == action_end_grid_pos:
 				action_legal = false
-				Global.swap_in_progress = false
+				Global.scoring_in_progress = false
 			if action_legal:
 				print ("Action start: " + str(action_start_grid_pos) + " Action end: " + str(action_end_grid_pos))
 				direction = movement_direction(action_start, action_end)
 				if !((direction.x + action_start_grid_pos.x) >= gridWidth or (direction.y + action_start_grid_pos.y) >= gridHeight or (direction.x + action_start_grid_pos.x) < 0 or (direction.y + action_start_grid_pos.y) < 0 or action_start == action_end):
 					swap_gems(action_start_grid_pos.x, action_start_grid_pos.y, direction)
 			else:
-				Global.swap_in_progress = false
+				Global.scoring_in_progress = false
 			action_legal = false
 
 func score_matches():
@@ -249,13 +254,52 @@ func score_matches():
 				score += gem_value
 				var gem_type = gem_array[column][row].score(gem_value)
 				Global.total_gems_matched[gem_type] += 1
-				$ScoreValue.text = str(score)
 				gem_array[column][row] = null
 	combo += 1
 
 # Function called by spend_button and similar buttons
 func on_spend_button_pressed(spend_gem_type):
 	print("Spend button pressed for gem type: " + str(spend_gem_type))
-	match spend_gem_type == "amethyst":
-		
-		pass
+	if !Global.scoring_in_progress and !Global.ability_in_progress:
+		match spend_gem_type:
+			"amethyst":
+				await spend_amethysts()
+			"aquamarine":
+				pass
+			"emerald":
+				pass
+			"ruby":
+				pass
+			"sapphire":
+				pass
+			"topaz":
+				pass
+	else:
+		print("Cannot spend gems while swap in progress!")
+
+func spend_amethysts():
+	# Check if player has enough amethysts to spend
+	if Global.total_gems_matched["amethyst"] >= Global.amethyst_ability_cost:
+		Global.ability_in_progress = true
+		Global.total_gems_matched["amethyst"] -= Global.amethyst_ability_cost
+		# clear a clicked single gem from the board
+		while Global.ability_in_progress:
+			if Input.is_action_just_pressed("mouse_click"):
+				var location_clicked = get_global_mouse_position()
+				var gem_to_destroy = pixel_to_grid(location_clicked)
+				if is_in_grid(gem_to_destroy.x, gem_to_destroy.y):
+					var gem_value = base_gem_score
+					score += gem_value
+					gem_array[gem_to_destroy.x][gem_to_destroy.y].match()
+					var gem_type_scored = gem_array[gem_to_destroy.x][gem_to_destroy.y].score(gem_value)
+					Global.total_gems_matched[gem_type_scored] += 1
+					gem_array[gem_to_destroy.x][gem_to_destroy.y] = null
+					await score_matches_loop()
+					Global.ability_in_progress = false
+
+			if Input.is_action_just_pressed("right_mouse_click"):
+				Global.ability_in_progress = false
+				Global.total_gems_matched["amethyst"] += Global.amethyst_ability_cost  # Refund the amethysts if the player cancels the ability
+			await get_tree().process_frame
+	else:
+		print("Not enough amethysts to spend!")

@@ -1,6 +1,8 @@
 extends Node
 
-var swap_in_progress = false
+var scoring_in_progress = false
+var ability_in_progress = false
+var amethyst_ability_cost = 1
 
 var total_gems_matched = {
 	"emerald": 0,
