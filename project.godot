@@ -16,7 +16,7 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://Assets/ruby.png"
 
 [autoload]
-
+AudioManager="*res://Logic/audioManager.gd"
 Global="*uid://dnmscw84oi7pl"
 
 [display]

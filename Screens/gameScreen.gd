@@ -255,6 +255,8 @@ func score_matches():
 				var gem_type = gem_array[column][row].score(gem_value)
 				Global.total_gems_matched[gem_type] += 1
 				gem_array[column][row] = null
+				#play sound effect when scoring
+	AudioManager.play_sound("gem_match", 0, 1 + (combo - 1) * 0.1)
 	combo += 1
 
 # Function called by spend_button and similar buttons
