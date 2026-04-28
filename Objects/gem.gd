@@ -1,9 +1,18 @@
 extends Node2D
 
 @export var gemType = ""
+@export var explosiveGem = false
+@export var readyToExplode = false
 var defaultScale = 0.2
 var matched = false
 var is_hovered = false
+var pulse_tween: Tween
+
+func _process(_delta: float) -> void:
+	if explosiveGem and !matched and pulse_tween == null:
+		create_pulse_animation()
+
+
 
 func _on_area_2d_mouse_entered():
 	if !matched && !Global.scoring_in_progress:
@@ -17,8 +26,17 @@ func _on_area_2d_mouse_exited():
 		var animation = get_tree().create_tween()
 		animation.tween_property($AnimatedSprite2D, "scale", Vector2(defaultScale, defaultScale), 0.1)
 
+func create_pulse_animation():
+	pulse_tween = get_tree().create_tween()
+	pulse_tween.set_loops()
+	pulse_tween.tween_property($AnimatedSprite2D, "scale", Vector2(defaultScale * 1.1, defaultScale * 1.1), 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	pulse_tween.tween_property($AnimatedSprite2D, "scale", Vector2(defaultScale, defaultScale), 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
 func match():
 	matched = true
+	if pulse_tween:
+		pulse_tween.kill()
+		pulse_tween = null
 	#scale the gem down til it disappears to indicate it's been matched
 	var animation = get_tree().create_tween()
 	print("Scaling down gem at position: " + str(position))

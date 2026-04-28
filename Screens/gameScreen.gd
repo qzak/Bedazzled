@@ -37,7 +37,7 @@ func _ready():
 		for row in gridWidth:
 			print("Spawning gem at column: " + str(column) + " row: " + str(row))
 			print("gem array location: " + str(gem_array[column][row]))
-			spawn_gem(column, row)
+			spawn_gem(column, row,true, true)
 	
 	#spawn the spend gem buttons and connect their signals to the on_spend_button_pressed function
 
@@ -65,17 +65,14 @@ func make_grid_array():
 			array[i].append("temp")
 	return array
 
-func spawn_gem(column, row, animate = true):
+func spawn_gem(column, row, animate = true, initial_spawn = false):
 	var random_gem = randi() % gem_list.size()
 	var gem_instance = gem_list[random_gem].instantiate()
 	var random_gem_type = gem_instance.gemType
-	if check_match(column, row, random_gem_type):
-		if random_gem == gem_list.size() - 1:
-			random_gem = 0
-		else:
-			random_gem += 1
+	if !initial_spawn:
 		gem_instance = gem_list[random_gem].instantiate()
 		random_gem_type = gem_instance.gemType
+	else:
 		if check_match(column, row, random_gem_type):
 			if random_gem == gem_list.size() - 1:
 				random_gem = 0
@@ -83,6 +80,13 @@ func spawn_gem(column, row, animate = true):
 				random_gem += 1
 			gem_instance = gem_list[random_gem].instantiate()
 			random_gem_type = gem_instance.gemType
+			if check_match(column, row, random_gem_type):
+				if random_gem == gem_list.size() - 1:
+					random_gem = 0
+				else:
+					random_gem += 1
+				gem_instance = gem_list[random_gem].instantiate()
+				random_gem_type = gem_instance.gemType
 	add_child(gem_instance)
 	if animate:
 		gem_instance.position = grid_to_pixel(column, row + gridHeight)
@@ -119,22 +123,59 @@ func check_matches():
 					if gem_array[column - 1][row] != null and gem_array[column - 2][row] != null:
 						if gemType == gem_array[column - 1][row].gemType and gemType == gem_array[column - 2][row].gemType:
 							print("Match found at column: " + str(column) + " row: " + str(row))
-							gem_array[column][row].match()
-							gem_array[column - 1][row].match()
-							gem_array[column - 2][row].match()
+							# Check for 4+ horizontal match and mark as explosive
+							var horizontal_gems = get_horizontal_match_gems(column, row, gemType)
+							if horizontal_gems.size() >= 4:
+								horizontal_gems[horizontal_gems.size() / 2].explosiveGem = true
+								print("Explosive gem created at column: " + str(column) + " row: " + str(row))
+							for gem in horizontal_gems:
+								if !gem.explosiveGem || gem.readyToExplode:
+									gem.match()
 							found_at_least_one_match = true
 				if row > 1:
 					if gem_array[column][row - 1] != null and gem_array[column][row - 2] != null:
 						if gemType == gem_array[column][row - 1].gemType and gemType == gem_array[column][row - 2].gemType:
 							print("Match found at column: " + str(column) + " row: " + str(row))
-							gem_array[column][row].match()
-							gem_array[column][row - 1].match()
-							gem_array[column][row - 2].match()
+							# Check for 4+ vertical match and mark as explosive
+							var vertical_gems = get_vertical_match_gems(column, row, gemType)
+							if vertical_gems.size() >= 4:
+								vertical_gems[vertical_gems.size() / 2].explosiveGem = true
+								print("Explosive gem created at column: " + str(column) + " row: " + str(row))
+							# Mark all matched gems
+							for gem in vertical_gems:
+								if !gem.explosiveGem || gem.readyToExplode:
+									gem.match()
 							found_at_least_one_match = true
 	if found_at_least_one_match:
 		return true
 	else:
 		return false
+
+func get_horizontal_match_gems(column, row, gemType):
+	var matched_gems = []
+	# Find the leftmost gem in the match
+	var left_column = column
+	while left_column > 0 and gem_array[left_column - 1][row] != null and gem_array[left_column - 1][row].gemType == gemType:
+		left_column -= 1
+	# Collect all consecutive gems to the right
+	var current_column = left_column
+	while current_column < gridWidth and gem_array[current_column][row] != null and gem_array[current_column][row].gemType == gemType:
+		matched_gems.append(gem_array[current_column][row])
+		current_column += 1
+	return matched_gems
+
+func get_vertical_match_gems(column, row, gemType):
+	var matched_gems = []
+	# Find the topmost gem in the match
+	var top_row = row
+	while top_row > 0 and gem_array[column][top_row - 1] != null and gem_array[column][top_row - 1].gemType == gemType:
+		top_row -= 1
+	# Collect all consecutive gems downward
+	var current_row = top_row
+	while current_row < gridHeight and gem_array[column][current_row] != null and gem_array[column][current_row].gemType == gemType:
+		matched_gems.append(gem_array[column][current_row])
+		current_row += 1
+	return matched_gems
 
 func movement_direction(start, end):
 	var mov_direction = end - start
@@ -166,9 +207,9 @@ func swap_gems(column1, row1, swap_direction):
 	await first_gem_tween.finished
 	await second_gem_tween.finished
 	print("Gem animations triggered")
-	if check_matches():
-		print("Match found, keeping swap")
-		await score_matches_loop()
+	if await score_matches_loop():
+		print("Matches found and scored")
+		pass
 	else:
 		print("No match found, swapping back")
 		var first_gem_tween_back = get_tree().create_tween()
@@ -182,18 +223,29 @@ func swap_gems(column1, row1, swap_direction):
 	Global.scoring_in_progress = false
 
 func score_matches_loop():
-	combo = 1
-	var continue_matching = true
-	while continue_matching:
-		await score_matches()
-		print("Scored matches, dropping gems")
-		#wait 100ms to allow for player to be satisfied with numbers
-		await get_tree().create_timer(0.3).timeout
-		drop_gems()
-		print("Dropped gems, spawning new gems")
-		spawn_new_gems()
-		await get_tree().create_timer(0.5).timeout
-		continue_matching = check_matches()
+	if check_matches():
+		combo = 1
+		var continue_matching = true
+		while continue_matching:
+			await score_matches()
+			print("Scored matches, dropping gems")
+			#wait 100ms to allow for player to be satisfied with numbers
+			await get_tree().create_timer(0.3).timeout
+			drop_gems()
+			print("Dropped gems, spawning new gems")
+			spawn_new_gems()
+			await get_tree().create_timer(0.5).timeout
+			prepareSpecialGems()
+			continue_matching = check_matches()
+		return true
+	else:
+		return false
+
+func prepareSpecialGems():
+	for column in gridWidth:
+		for row in gridHeight:
+			if gem_array[column][row] != null and gem_array[column][row].explosiveGem:
+				gem_array[column][row].readyToExplode = true	
 
 
 func drop_gems():
@@ -296,6 +348,7 @@ func spend_amethysts():
 					var gem_type_scored = gem_array[gem_to_destroy.x][gem_to_destroy.y].score(gem_value)
 					Global.total_gems_matched[gem_type_scored] += 1
 					gem_array[gem_to_destroy.x][gem_to_destroy.y] = null
+					drop_gems()
 					await score_matches_loop()
 					Global.ability_in_progress = false
 
