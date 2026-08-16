@@ -28,9 +28,12 @@ var action_start_grid_pos = Vector2()
 var action_end_grid_pos = Vector2()
 var direction = Vector2()
 var action_legal = false
+var pause_menu
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	Global.reset_game_state()
+	create_pause_menu()
 	gem_array = make_grid_array()
 	print(gem_array)
 	for column in gridHeight:
@@ -45,6 +48,24 @@ func _ready():
 	add_child(spend_button)
 	spend_button.position = Vector2(85, 250)  # Set your desired position
 	spend_button.spend_button_pressed.connect(on_spend_button_pressed)
+
+func create_pause_menu() -> void:
+	pause_menu = preload("res://Screens/pauseMenu.tscn").instantiate()
+	add_child(pause_menu)
+	pause_menu.resume_requested.connect(resume_game)
+
+func pause_game() -> void:
+	get_tree().paused = true
+	pause_menu.show_menu()
+
+func resume_game() -> void:
+	pause_menu.hide_menu()
+	get_tree().paused = false
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause") and not get_tree().paused:
+		pause_game()
+		get_viewport().set_input_as_handled()
 
 
 func grid_to_pixel(column, row):

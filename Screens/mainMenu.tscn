@@ -1,0 +1,202 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Screens/mainMenu.gd" id="1_script"]
+[ext_resource type="FontFile" path="res://Assets/agencyfb_bold.ttf" id="2_bold"]
+[ext_resource type="FontFile" path="res://Assets/agencyfb_reg.ttf" id="3_regular"]
+
+[sub_resource type="StyleBoxFlat" id="PanelStyle"]
+bg_color = Color(0.055, 0.09, 0.15, 0.94)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.23, 0.7, 0.78, 0.75)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 16
+
+[sub_resource type="StyleBoxFlat" id="ButtonNormal"]
+bg_color = Color(0.1, 0.38, 0.5, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="ButtonHover"]
+bg_color = Color(0.16, 0.62, 0.7, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.025, 0.055, 0.11, 1)
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 115.0
+offset_bottom = 260.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.35, 0.9, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 8
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 132
+text = "BEDAZZLED"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 260.0
+offset_bottom = 310.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.75, 0.86, 0.92, 1)
+theme_override_fonts/font = ExtResource("3_regular")
+theme_override_font_sizes/font_size = 34
+text = "Match gems. Build combos. Make them sparkle."
+horizontal_alignment = 1
+
+[node name="MenuPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -330.0
+offset_top = 370.0
+offset_right = 330.0
+offset_bottom = 825.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("PanelStyle")
+
+[node name="Margin" type="MarginContainer" parent="MenuPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 55
+theme_override_constants/margin_top = 42
+theme_override_constants/margin_right = 55
+theme_override_constants/margin_bottom = 42
+
+[node name="Content" type="VBoxContainer" parent="MenuPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="StartButton" type="Button" parent="MenuPanel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 74)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 42
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/hover = SubResource("ButtonHover")
+theme_override_styles/pressed = SubResource("ButtonHover")
+text = "START GAME"
+
+[node name="AudioHeading" type="Label" parent="MenuPanel/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.9, 0.96, 1)
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 31
+text = "AUDIO OPTIONS"
+
+[node name="MasterRow" type="HBoxContainer" parent="MenuPanel/Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Label" type="Label" parent="MenuPanel/Margin/Content/MasterRow"]
+custom_minimum_size = Vector2(145, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_regular")
+theme_override_font_sizes/font_size = 28
+text = "Master"
+
+[node name="MasterVolume" type="HSlider" parent="MenuPanel/Margin/Content/MasterRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+step = 1.0
+value = 100.0
+
+[node name="MasterValue" type="Label" parent="MenuPanel/Margin/Content/MasterRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_regular")
+theme_override_font_sizes/font_size = 26
+text = "100%"
+horizontal_alignment = 2
+
+[node name="SoundEffectsRow" type="HBoxContainer" parent="MenuPanel/Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Label" type="Label" parent="MenuPanel/Margin/Content/SoundEffectsRow"]
+custom_minimum_size = Vector2(145, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_regular")
+theme_override_font_sizes/font_size = 28
+text = "Effects"
+
+[node name="SoundEffectsVolume" type="HSlider" parent="MenuPanel/Margin/Content/SoundEffectsRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+step = 1.0
+value = 100.0
+
+[node name="SoundEffectsValue" type="Label" parent="MenuPanel/Margin/Content/SoundEffectsRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_regular")
+theme_override_font_sizes/font_size = 26
+text = "100%"
+horizontal_alignment = 2
+
+[node name="Spacer" type="Control" parent="MenuPanel/Margin/Content"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="QuitButton" type="Button" parent="MenuPanel/Margin/Content"]
+custom_minimum_size = Vector2(260, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/hover = SubResource("ButtonHover")
+theme_override_styles/pressed = SubResource("ButtonHover")
+text = "QUIT"
+
+[connection signal="pressed" from="MenuPanel/Margin/Content/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="value_changed" from="MenuPanel/Margin/Content/MasterRow/MasterVolume" to="." method="_on_master_volume_value_changed"]
+[connection signal="value_changed" from="MenuPanel/Margin/Content/SoundEffectsRow/SoundEffectsVolume" to="." method="_on_sound_effects_volume_value_changed"]
+[connection signal="pressed" from="MenuPanel/Margin/Content/QuitButton" to="." method="_on_quit_button_pressed"]

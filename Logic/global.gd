@@ -12,3 +12,9 @@ var total_gems_matched = {
 	"amethyst": 0,
 	"aquamarine": 0
 }
+
+func reset_game_state() -> void:
+	scoring_in_progress = false
+	ability_in_progress = false
+	for gem_type in total_gems_matched:
+		total_gems_matched[gem_type] = 0
