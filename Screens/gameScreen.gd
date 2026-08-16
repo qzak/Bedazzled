@@ -3,7 +3,7 @@ extends Node2D
 #Grid vars
 var gridWidth = 10
 var gridHeight = 10
-var grid_start = Vector2(760,1000)
+var grid_start = Vector2(772.5, 992.5)
 var offset = 100
 var base_gem_score = 100
 var combo = 1
@@ -46,7 +46,7 @@ func _ready():
 
 	var spend_button = preload("res://Objects/spendAmethystButton.tscn").instantiate()
 	add_child(spend_button)
-	spend_button.position = Vector2(85, 250)  # Set your desired position
+	spend_button.position = Vector2(60, 315)
 	spend_button.spend_button_pressed.connect(on_spend_button_pressed)
 
 func create_pause_menu() -> void:
@@ -291,7 +291,7 @@ func spawn_new_gems():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	$ScoreValue.text = str(score)
+	update_score_display()
 	$Debug.text = "Scoring in progress: " + str(Global.scoring_in_progress) + "\nAbility in progress: " + str(Global.ability_in_progress) + "\nAction legal: " + str(action_legal) + "\nAction start: " + str(action_start) + "\nAction end: " + str(action_end) + "\nAction start grid pos: " + str(action_start_grid_pos) + "\nAction end grid pos: " + str(action_end_grid_pos) + "\nDirection: " + str(direction)
 	if !Global.scoring_in_progress and !Global.ability_in_progress:
 		if Input.is_action_just_pressed("mouse_click"):
@@ -316,7 +316,22 @@ func _process(_delta: float) -> void:
 					swap_gems(action_start_grid_pos.x, action_start_grid_pos.y, direction)
 			else:
 				Global.scoring_in_progress = false
-			action_legal = false
+				action_legal = false
+
+func update_score_display() -> void:
+	var score_text := str(score)
+	$ScoreValue.text = score_text
+
+	var font_size := 130
+	if score_text.length() >= 10:
+		font_size = 70
+	elif score_text.length() >= 9:
+		font_size = 85
+	elif score_text.length() >= 8:
+		font_size = 100
+	elif score_text.length() >= 7:
+		font_size = 115
+	$ScoreValue.add_theme_font_size_override("font_size", font_size)
 
 func score_matches():
 	var gem_value = 0

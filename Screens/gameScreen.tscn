@@ -3,30 +3,106 @@
 [ext_resource type="Script" uid="uid://dydscjs8d30o6" path="res://Screens/gameScreen.gd" id="1_ae8uw"]
 [ext_resource type="FontFile" uid="uid://qc2tl5rfdjwg" path="res://Assets/agencyfb_bold.ttf" id="2_ilovs"]
 
+[sub_resource type="StyleBoxFlat" id="BoardStyle"]
+bg_color = Color(0.045, 0.16, 0.24, 1)
+border_width_left = 7
+border_width_top = 7
+border_width_right = 7
+border_width_bottom = 7
+border_color = Color(0.16, 0.68, 0.78, 0.9)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0, 0, 0, 0.55)
+shadow_size = 18
+
+[sub_resource type="StyleBoxFlat" id="SidebarStyle"]
+bg_color = Color(0.035, 0.075, 0.13, 0.97)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.15, 0.52, 0.66, 0.8)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 12
+
 [node name="gameScreen" type="Node2D" unique_id=1584342859]
 
-[node name="playArea" type="ColorRect" parent="." unique_id=1300977168]
-light_mask = 0
+[node name="Background" type="ColorRect" parent="." unique_id=106951923]
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+color = Color(0.012, 0.028, 0.065, 1)
+
+[node name="playArea" type="Panel" parent="." unique_id=1300977168]
 offset_left = 700.0
 offset_top = 20.0
 offset_right = 1745.0
 offset_bottom = 1065.0
-mouse_filter = 1
-color = Color(0.21205786, 0.3516093, 0.46308267, 1)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("BoardStyle")
+
+[node name="Sidebar" type="Panel" parent="." unique_id=534834332]
+offset_left = 25.0
+offset_top = 20.0
+offset_right = 680.0
+offset_bottom = 1065.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SidebarStyle")
+
+[node name="Accent" type="ColorRect" parent="Sidebar" unique_id=2109953071]
+layout_mode = 0
+offset_left = 33.0
+offset_top = 218.0
+offset_right = 622.0
+offset_bottom = 224.0
+mouse_filter = 2
+color = Color(0.24, 0.8, 0.87, 0.85)
+
+[node name="GameTitle" type="Label" parent="Sidebar" unique_id=431381774]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 242.0
+offset_right = 620.0
+offset_bottom = 291.0
+theme_override_colors/font_color = Color(0.35, 0.9, 0.96, 1)
+theme_override_fonts/font = ExtResource("2_ilovs")
+theme_override_font_sizes/font_size = 40
+text = "GEM POWERS"
+
+[node name="GameHint" type="Label" parent="Sidebar" unique_id=522160695]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 917.0
+offset_right = 620.0
+offset_bottom = 995.0
+theme_override_colors/font_color = Color(0.57, 0.72, 0.8, 1)
+theme_override_fonts/font = ExtResource("2_ilovs")
+theme_override_font_sizes/font_size = 25
+text = "Match 3 or more gems
+to build a bigger score."
 
 [node name="gameScreen" type="Node2D" parent="." unique_id=1637153113]
 script = ExtResource("1_ae8uw")
 
 [node name="ScoreValue" type="Label" parent="gameScreen" unique_id=1714983299]
-offset_left = 378.0
-offset_top = 38.0
-offset_right = 683.0
-offset_bottom = 219.0
+offset_left = 50.0
+offset_top = 91.0
+offset_right = 655.0
+offset_bottom = 248.0
+theme_override_colors/font_color = Color(1, 0.83, 0.35, 1)
 theme_override_fonts/font = ExtResource("2_ilovs")
-theme_override_font_sizes/font_size = 150
+theme_override_font_sizes/font_size = 130
 text = "0"
+horizontal_alignment = 1
 
 [node name="Debug" type="Label" parent="gameScreen" unique_id=86561462]
+visible = false
 offset_left = 82.0
 offset_top = 463.0
 offset_right = 662.0
@@ -36,10 +112,12 @@ theme_override_font_sizes/font_size = 50
 text = "0"
 
 [node name="Score" type="Label" parent="." unique_id=303282375]
-offset_left = 33.0
-offset_top = 38.0
-offset_right = 366.0
-offset_bottom = 219.0
+offset_left = 50.0
+offset_top = 33.0
+offset_right = 655.0
+offset_bottom = 110.0
+theme_override_colors/font_color = Color(0.75, 0.9, 0.96, 1)
 theme_override_fonts/font = ExtResource("2_ilovs")
-theme_override_font_sizes/font_size = 150
-text = "Score:"
+theme_override_font_sizes/font_size = 64
+text = "SCORE"
+horizontal_alignment = 1
