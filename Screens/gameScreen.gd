@@ -46,7 +46,7 @@ func _ready():
 
 	var spend_button = preload("res://Objects/spendAmethystButton.tscn").instantiate()
 	add_child(spend_button)
-	spend_button.position = Vector2(60, 315)
+	spend_button.position = Vector2(60, 340)
 	spend_button.spend_button_pressed.connect(on_spend_button_pressed)
 
 func create_pause_menu() -> void:
@@ -319,19 +319,8 @@ func _process(_delta: float) -> void:
 				action_legal = false
 
 func update_score_display() -> void:
-	var score_text := str(score)
-	$ScoreValue.text = score_text
-
-	var font_size := 130
-	if score_text.length() >= 10:
-		font_size = 70
-	elif score_text.length() >= 9:
-		font_size = 85
-	elif score_text.length() >= 8:
-		font_size = 100
-	elif score_text.length() >= 7:
-		font_size = 115
-	$ScoreValue.add_theme_font_size_override("font_size", font_size)
+	$ScoreValue.set_digit_font_size(100)
+	$ScoreValue.set_score(score)
 
 func score_matches():
 	var gem_value = 0

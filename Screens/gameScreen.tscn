@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dydscjs8d30o6" path="res://Screens/gameScreen.gd" id="1_ae8uw"]
 [ext_resource type="FontFile" uid="uid://qc2tl5rfdjwg" path="res://Assets/agencyfb_bold.ttf" id="2_ilovs"]
+[ext_resource type="Script" uid="uid://c5enlhtksu0e6" path="res://Objects/scoreRoller.gd" id="3_score_roller"]
 
 [sub_resource type="StyleBoxFlat" id="BoardStyle"]
 bg_color = Color(0.045, 0.16, 0.24, 1)
@@ -58,18 +59,18 @@ theme_override_styles/panel = SubResource("SidebarStyle")
 [node name="Accent" type="ColorRect" parent="Sidebar" unique_id=2109953071]
 layout_mode = 0
 offset_left = 33.0
-offset_top = 218.0
+offset_top = 240.0
 offset_right = 622.0
-offset_bottom = 224.0
+offset_bottom = 246.0
 mouse_filter = 2
 color = Color(0.24, 0.8, 0.87, 0.85)
 
 [node name="GameTitle" type="Label" parent="Sidebar" unique_id=431381774]
 layout_mode = 0
 offset_left = 32.0
-offset_top = 242.0
+offset_top = 264.0
 offset_right = 620.0
-offset_bottom = 291.0
+offset_bottom = 313.0
 theme_override_colors/font_color = Color(0.35, 0.9, 0.96, 1)
 theme_override_fonts/font = ExtResource("2_ilovs")
 theme_override_font_sizes/font_size = 40
@@ -90,16 +91,18 @@ to build a bigger score."
 [node name="gameScreen" type="Node2D" parent="." unique_id=1637153113]
 script = ExtResource("1_ae8uw")
 
-[node name="ScoreValue" type="Label" parent="gameScreen" unique_id=1714983299]
+[node name="ScoreValue" type="Control" parent="gameScreen" unique_id=1714983299]
+layout_mode = 3
+anchors_preset = 0
 offset_left = 50.0
-offset_top = 91.0
+offset_top = 96.0
 offset_right = 655.0
-offset_bottom = 248.0
-theme_override_colors/font_color = Color(1, 0.83, 0.35, 1)
-theme_override_fonts/font = ExtResource("2_ilovs")
-theme_override_font_sizes/font_size = 130
-text = "0"
-horizontal_alignment = 1
+offset_bottom = 250.0
+mouse_filter = 2
+script = ExtResource("3_score_roller")
+digit_font = ExtResource("2_ilovs")
+digit_font_size = 100
+digit_color = Color(0.04, 0.05, 0.07, 1)
 
 [node name="Debug" type="Label" parent="gameScreen" unique_id=86561462]
 visible = false
@@ -113,9 +116,9 @@ text = "0"
 
 [node name="Score" type="Label" parent="." unique_id=303282375]
 offset_left = 50.0
-offset_top = 33.0
+offset_top = 28.0
 offset_right = 655.0
-offset_bottom = 110.0
+offset_bottom = 105.0
 theme_override_colors/font_color = Color(0.75, 0.9, 0.96, 1)
 theme_override_fonts/font = ExtResource("2_ilovs")
 theme_override_font_sizes/font_size = 64
